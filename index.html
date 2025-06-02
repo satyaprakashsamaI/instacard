@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InstaCard!</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+
+
+  <!-- Import Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&family=Lobster&family=Indie+Flower&family=Comic+Neue:wght@400;700&family=Great+Vibes&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Montserrat", sans-serif;
+      background-color: #121212;
+      color: #eeeeee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+    h6 {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #cccccc;
+      margin-bottom: 2rem;
+    }
+    .row {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 1.5rem;
+    }
+    .input-row { justify-content: flex-start; }
+    .input-row input {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 2px solid #555555;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .input-row input:focus { border-color: #888888; }
+
+    .option-row { justify-content: center; align-items: center; }
+    .option-row select {
+      flex: 0 0 140px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 2px solid #555555;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .option-row select:focus { border-color: #888888; }
+    .option-row input[type="color"] {
+      flex: 0 0 40px;
+      height: 30px;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .option-row input[type="file"] {
+      flex: 0 0 140px;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 2px solid #555555;
+      border-radius: 12px;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .option-row input[type="file"]:focus { border-color: #888888; }
+    .ai-btn {
+      flex: 0 0 80px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background-color: #2e2e2e;
+      color: #ffffff;
+      border: 2px solid #555555;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      text-align: center;
+    }
+    .ai-btn:hover { background-color: #444444; border-color: #888888; }
+
+    #card {
+      width: 500px;
+      height: 340px;
+      border-radius: 20px;
+      margin: 1rem auto;
+      background-color: #ffffff;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+      display: block;
+    }
+    #card-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      color: #000000;
+      border-radius: 20px;
+      background: transparent;
+      background-clip: padding-box;
+    }
+    #watermark {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 1.25rem;
+      font-family: "Montserrat", sans-serif;
+      color: rgba(128, 128, 128, 0.5);
+      font-weight: 700;
+      pointer-events: none;
+      user-select: none;
+    }
+    #card-content h2,
+    #card-content p {
+      margin: 0.25rem 0;
+      z-index: 1;
+      color: inherit;
+    }
+
+    .btn-container { display: flex; gap: 1rem; margin-top: 1rem; }
+    .btn-container .btn {
+      padding: 0.75rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #000000;
+      background-color: #ff7f50;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.4s ease;
+    }
+    .btn-container .btn:hover {
+      background: linear-gradient(45deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff, #e3baff);
+    }
+  </style>
+</head>
+<body>
+  <h1>InstaCard</h1>
+  <h6>Designing Invitation Cards Simplified.</h6>
+
+  <div class="row input-row">
+    <input type="text" id="eventTitle" placeholder="Event Title ✨" />
+    <input type="date" id="date" />
+    <input type="time" id="time" />
+    <input type="text" id="location" placeholder="Location 📌" />
+  </div>
+
+  <div class="row option-row">
+    <select id="fontSelector" title="Choose font">
+      <option value="Pacifico">Pacifico</option>
+      <option value="Lobster">Lobster</option>
+      <option value="Indie Flower">Indie Flower</option>
+      <option value="Comic Neue">Comic Neue</option>
+      <option value="Great Vibes">Great Vibes</option>
+      <option value="Roboto">Roboto</option>
+      <option value="Open Sans">Open Sans</option>
+      <option value="Lato">Lato</option>
+      <option value="Montserrat" selected>Montserrat</option>
+      <option value="Raleway">Raleway</option>
+    </select>
+    <input type="color" id="textColorPicker" value="#000000" title="Text Color" />
+    <input type="file" id="bgUpload" accept="image/*" />
+    <input type="color" id="bgColorPicker" value="#ffffff" title="Background Color" />
+    <button id="aiBtn" class="ai-btn">AI ✨</button>
+  </div>
+
+  <div id="card">
+    <div id="card-content">
+      <div id="watermark">InstaCard</div>
+      <h2 id="cardTitle">Event Title</h2>
+      <p id="cardDate">Date: </p>
+      <p id="cardTime">Time: </p>
+      <p id="cardLocation">Location: </p>
+    </div>
+  </div>
+
+  <div class="btn-container">
+    <button id="downloadBtn" class="btn">Download ✨</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    const titleInput = document.getElementById("eventTitle");
+    const dateInput = document.getElementById("date");
+    const timeInput = document.getElementById("time");
+    const locationInput = document.getElementById("location");
+    const fontSelector = document.getElementById("fontSelector");
+    const textColorPicker = document.getElementById("textColorPicker");
+    const bgUpload = document.getElementById("bgUpload");
+    const bgColorPicker = document.getElementById("bgColorPicker");
+    const aiBtn = document.getElementById("aiBtn");
+    const card = document.getElementById("card");
+    const cardContent = document.getElementById("card-content");
+    const cardTitle = document.getElementById("cardTitle");
+    const cardDate = document.getElementById("cardDate");
+    const cardTime = document.getElementById("cardTime");
+    const cardLocation = document.getElementById("cardLocation");
+    const downloadBtn = document.getElementById("downloadBtn");
+    let aiClickCount = 0;
+
+    function formatDateToDDMMYYYY(dateObj) {
+      const dd = String(dateObj.getDate()).padStart(2, "0");
+      const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const yyyy = dateObj.getFullYear();
+      return dd + "/" + mm + "/" + yyyy;
+    }
+
+    function hslToHex(h, s, l) {
+      s /= 100; l /= 100;
+      const c = (1 - Math.abs(2*l - 1)) * s;
+      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+      const m = l - c / 2;
+      let r = 0, g = 0, b = 0;
+      if (h < 60) { r = c; g = x; b = 0; }
+      else if (h < 120) { r = x; g = c; b = 0; }
+      else if (h < 180) { r = 0; g = c; b = x; }
+      else if (h < 240) { r = 0; g = x; b = c; }
+      else if (h < 300) { r = x; g = 0; b = c; }
+      else { r = c; g = 0; b = x; }
+      const toHex = (v) => {
+        const hex = Math.round((v + m) * 255).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      };
+      return "#" + toHex(r) + toHex(g) + toHex(b);
+    }
+
+    function pickPastelFromTitle(title, salt) {
+      if (!title) return "#ffffff";
+      let hash = 0;
+      const combo = title + "|" + salt;
+      for (let i = 0; i < combo.length; i++) {
+        hash = combo.charCodeAt(i) + ((hash << 5) - hash);
+        hash &= hash;
+      }
+      const hue = Math.abs(hash) % 360;
+      return hslToHex(hue, 70, 85);
+    }
+
+    function pickFontFromTitle(title, salt) {
+      const fonts = Array.from(fontSelector.options).map(opt => opt.value);
+      if (!title) return "Montserrat";
+      let hash = 0;
+      const combo = title + "|" + salt;
+      for (let i = 0; i < combo.length; i++) {
+        hash = combo.charCodeAt(i) + ((hash << 5) - hash);
+        hash &= hash;
+      }
+      const idx = Math.abs(hash) % fonts.length;
+      return fonts[idx];
+    }
+
+    function updateCard() {
+      const t = titleInput.value.trim() || "Event Title";
+      cardTitle.innerText = t;
+      if (dateInput.value) {
+        const d = new Date(dateInput.value);
+        cardDate.innerText = "Date: " + formatDateToDDMMYYYY(d);
+      } else {
+        cardDate.innerText = "Date: ";
+      }
+      if (timeInput.value) {
+        const [h, m] = timeInput.value.split(":");
+        let hh = parseInt(h, 10);
+        const suffix = hh >= 12 ? "PM" : "AM";
+        hh = hh % 12 || 12;
+        cardTime.innerText = `Time: ${hh}:${m} ${suffix}`;
+      } else {
+        cardTime.innerText = "Time: ";
+      }
+      const loc = locationInput.value.trim() || "";
+      cardLocation.innerText = loc ? `Location: ${loc}` : "Location: ";
+
+      cardContent.style.fontFamily = `"${fontSelector.value}", sans-serif`;
+      cardContent.style.color = textColorPicker.value;
+
+      if (!card.style.backgroundImage) {
+        card.style.backgroundColor = bgColorPicker.value;
+      }
+    }
+
+    bgUpload.addEventListener("change", () => {
+      const file = bgUpload.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          card.style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        card.style.backgroundImage = "";
+      }
+    });
+
+    [titleInput, dateInput, timeInput, locationInput, fontSelector, textColorPicker, bgColorPicker].forEach(el => {
+      el.addEventListener("input", updateCard);
+      el.addEventListener("change", updateCard);
+    });
+
+    aiBtn.addEventListener("click", () => {
+      const title = titleInput.value.trim();
+      aiClickCount++;
+      const pastel = pickPastelFromTitle(title, aiClickCount);
+      const font = pickFontFromTitle(title, aiClickCount);
+      bgColorPicker.value = pastel;
+      fontSelector.value = font;
+      card.style.backgroundImage = "";
+      updateCard();
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      html2canvas(card, { scale: 2, backgroundColor: null }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "Generated by InstaCard.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      card.style.backgroundColor = bgColorPicker.value;
+      updateCard();
+    });
+  </script>
+</body>
+</html>
+
