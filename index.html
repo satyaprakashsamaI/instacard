@@ -112,15 +112,23 @@
       border: 2px solid #555555;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
       text-align: center;
     }
     .ai-btn:hover {
-      background-color: #444444;
-      border-color: #888888;
+      background: linear-gradient(
+        45deg,
+        #ffb3ba,
+        #ffdfba,
+        #ffffba,
+        #baffc9,
+        #bae1ff,
+        #e3baff
+      );
+      color: #000000;
     }
 
-    /* DESKTOP CARD + DOWNLOAD (unchanged layout) */
+    /* DESKTOP CARD + DOWNLOAD */
     #card-container {
       width: 500px;
       margin: 1rem auto;
@@ -151,13 +159,15 @@
       align-items: center;     /* horizontal center */
       text-align: center;
       padding: 1rem;
-      color: inherit; /* ← was “#000000” before; now inherits from #card-desktop */
+      color: inherit; /* inherits from #card-desktop */
     }
+    /* Watermark always Montserrat */
     #watermark-desktop {
       position: absolute;
       top: 8px;
       left: 8px;
       font-size: 1.25rem;
+      font-family: "Montserrat", sans-serif;
       color: rgba(128, 128, 128, 0.5);
       font-weight: 700;
       pointer-events: none;
@@ -171,12 +181,13 @@
       padding: 0.75rem 2rem;
       font-size: 1.1rem;
       font-weight: 600;
-      color: #000000;
-      background-color: #ff7f50;
+      color: #ffffff;               /* text white */
+      background-color: #32CD32;    /* #32CD32 */
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.4s ease;
+      transition: background 0.4s ease, color 0.2s ease;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); /* white drop shadow */
     }
     .btn:hover {
       background: linear-gradient(45deg,
@@ -186,6 +197,7 @@
         #baffc9,
         #bae1ff,
         #e3baff);
+      color: #000000;               /* text black on hover */
     }
 
     /* MOBILE-SPECIFIC RULES */
@@ -195,15 +207,23 @@
         flex-direction: column;
         align-items: stretch;
       }
-      .input-row input,
-      .option-row select,
-      .option-row input[type="file"],
-      .option-row input[type="color"],
-      .ai-btn {
+      .input-row input {
         width: 100%;
       }
       .option-row {
         gap: 0.5rem;
+      }
+      /* Revert font-picker, file-upload, AI button to normal sizes */
+      .option-row select,
+      .option-row input[type="file"],
+      .ai-btn {
+        width: auto;
+        padding: 0.75rem 1rem;
+        flex: 0 0 140px;
+      }
+      .option-row input[type="color"] {
+        width: 40px;
+        height: 30px;
       }
 
       /* Make live preview fit viewport */
@@ -218,7 +238,7 @@
         margin-bottom: 1rem;
       }
 
-      /* Ensure the desktop download button is visible and full-width */
+      /* Ensure the download button is full-width */
       .btn-container {
         margin-bottom: 1rem;
       }
@@ -255,7 +275,11 @@
         <option value="Raleway">Raleway</option>
       </select>
       <input type="color" id="textColorPicker" value="#000000" title="Text Color" />
-      <input type="file" id="bgUpload" accept="image/*" />
+      <input
+        type="file"
+        id="bgUpload"
+        accept=".jpg, .jpeg, .png, .webp"
+      />
       <input type="color" id="bgColorPicker" value="#ffffff" title="Background Color" />
       <button id="aiBtn" class="ai-btn">AI ✨</button>
     </div>
@@ -315,13 +339,34 @@
       const c = (1 - Math.abs(2 * l - 1)) * s;
       const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
       const m = l - c / 2;
-      let r = 0, g = 0, b = 0;
-      if (h < 60)      { r = c; g = x; b = 0; }
-      else if (h < 120){ r = x; g = c; b = 0; }
-      else if (h < 180){ r = 0; g = c; b = x; }
-      else if (h < 240){ r = 0; g = x; b = c; }
-      else if (h < 300){ r = x; g = 0; b = c; }
-      else             { r = c; g = 0; b = x; }
+      let r = 0,
+        g = 0,
+        b = 0;
+      if (h < 60) {
+        r = c;
+        g = x;
+        b = 0;
+      } else if (h < 120) {
+        r = x;
+        g = c;
+        b = 0;
+      } else if (h < 180) {
+        r = 0;
+        g = c;
+        b = x;
+      } else if (h < 240) {
+        r = 0;
+        g = x;
+        b = c;
+      } else if (h < 300) {
+        r = x;
+        g = 0;
+        b = c;
+      } else {
+        r = c;
+        g = 0;
+        b = x;
+      }
       const toHex = (v) => {
         const hex = Math.round((v + m) * 255).toString(16);
         return hex.length === 1 ? "0" + hex : hex;
@@ -343,11 +388,11 @@
 
     // PICK A RANDOM FONT BASED ON TITLE + SALT
     function pickFontFromTitle(title, salt) {
-      const fonts = Array.from(fontSelector.options).map(opt => opt.value);
+      const fonts = Array.from(fontSelector.options).map((opt) => opt.value);
       let hash = 0;
       const combo = title + "|" + salt;
       for (let i = 0; i < combo.length; i++) {
-        hash = combo.charCodeAt(i) + (hash << 5) - hash;
+        hash = combo.charCodeAt(i) + ((hash << 5) - hash);
         hash &= hash;
       }
       return fonts[Math.abs(hash) % fonts.length];
